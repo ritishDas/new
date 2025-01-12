@@ -25,8 +25,9 @@ const registerAdmin = async(req,res,next) => {
 const adminLogin = async(req,res,next) => {
 	try{
 		const {username,password} = req.body;
+	  console.log(req.body)
 		const user = await Admin.findOne({username});
-		if(!user) return res.status(400).json({message:"Email unknown pls retry"});
+		if(!user) return res.status(400).json({message:"Username unknown pls retry"});
 		const passcheck = await bcrypt.compare(password,user.password);
 		if(!passcheck) return res.status(400).json({message:"Incorrect password"});
 		else{
@@ -45,7 +46,7 @@ const adminLogin = async(req,res,next) => {
 
 const authCheck = (req,res,next) => {
 try{
-const token = req.cookie?.token;
+const token = req.cookies?.token;
   if(!token) return res.status(400).json({auth:false,
 message:"Token not found"
   });
