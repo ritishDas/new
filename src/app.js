@@ -1,6 +1,7 @@
 require("dotenv").config();
 const express = require("express");
 const cors = require("cors");
+const cookieParser = require("cookie-parser");
 
 const db = require("./db.js");
 const adminroute = require("./routes/admin.js");
@@ -15,6 +16,7 @@ app.use(cors({
 
 app.use(express.json());
 app.use(express.urlencoded());
+app.use(cookieParser());
 
 app.use("/api/admin",adminroute);
 app.use("/api/event",eventroute);

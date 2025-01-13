@@ -1,5 +1,6 @@
 const Admin = require( "../models/admin.js");
 const bcrypt = require("bcrypt");
+const jwt = require("jsonwebtoken");
 
 const registerAdmin = async(req,res,next) => {
 	try{
@@ -31,7 +32,7 @@ const adminLogin = async(req,res,next) => {
 		const passcheck = await bcrypt.compare(password,user.password);
 		if(!passcheck) return res.status(400).json({message:"Incorrect password"});
 		else{
-			const option = {httpOnly:true,secure:true}
+			const option = {httpOnly:true,secure:true,sameSite:"strict"}
 		const token = user.generateToken();
 		return res.status(200)
 				.cookie('token',token,option)
@@ -43,10 +44,10 @@ const adminLogin = async(req,res,next) => {
 	}
 }
 
-
 const authCheck = (req,res,next) => {
 try{
 const token = req.cookies?.token;
+  console.log(process.env.TOKEN_SECRET);
   if(!token) return res.status(400).json({auth:false,
 message:"Token not found"
   });
