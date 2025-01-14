@@ -21,7 +21,7 @@ const addEvent = async(req,res,next) => {
 
 const fetchEvent = async (req, res, next) => {
   try {
-    const events = await Event.findOne({ _id: req.params.id });
+    const events = await Event.findOne({ _id: req.params.id }).populate("participants").populate("winners");
     res.json(events);
   } catch (err) {
     next(err);
@@ -61,6 +61,7 @@ const addParticipation = async (req,res,next) => {
 const setWinners = async (req,res,next) => {
   try{
     const data = req.body;
+    console.log(req.params.id);
     for(let i=0;i<3;i++){
      let ind = await Participant.find({_id:data[i]});
       if(!ind) return res.status(404).json({"message":"winners not valid"});
@@ -77,4 +78,23 @@ const setWinners = async (req,res,next) => {
   }
 }
 
-module.exports = {setWinners, allEvent, addEvent, fetchEvent, addParticipation };
+const submitPhotos = async(req,res,next) => {
+  try{
+const id = req.params.id;
+    console.log(id);
+  const links = [];
+for(let i=0;i<req.files.length;i++){
+  const {url} = await cloudinary(req.files[i].path)
+links.push(url);
+}
+const event = await Event.findById(id);
+event.photos = links;
+await event.save();
+return res.json({message:"photos submitted"});
+  }
+  catch(err){
+next(err);
+  }
+}
+
+module.exports = {setWinners, allEvent, addEvent, fetchEvent, addParticipation,submitPhotos };

@@ -4,6 +4,7 @@ const jwt = require("jsonwebtoken");
 const authCheck = (req,res,next) => {
     try{
         const token = req.cookies?.token;
+      console.log("user here");
         if(!token) return res.status(401).json({message:"Please Login First"});
         const tokencheck=jwt.verify(token,process.env.TOKEN_SECRET); 
         if(tokencheck) req.user=tokencheck._id;

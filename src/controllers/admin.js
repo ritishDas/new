@@ -6,7 +6,6 @@ const registerAdmin = async(req,res,next) => {
 	try{
 		const {username,password} = req.body;
 		const user = await Admin.findOne({username});
-		console.log(user);
 		if(user) 
 			return res.status(400)
 				.json({"message":"admin already exist"});
@@ -26,7 +25,6 @@ const registerAdmin = async(req,res,next) => {
 const adminLogin = async(req,res,next) => {
 	try{
 		const {username,password} = req.body;
-	  console.log(req.body)
 		const user = await Admin.findOne({username});
 		if(!user) return res.status(400).json({message:"Username unknown pls retry"});
 		const passcheck = await bcrypt.compare(password,user.password);
@@ -36,7 +34,7 @@ const adminLogin = async(req,res,next) => {
 		const token = user.generateToken();
 		return res.status(200)
 				.cookie('token',token,option)
-				.json({message:"User logged in"})
+				.json({log:true,message:"User logged in"})
 		}
 	}
 	catch(err){
@@ -47,7 +45,6 @@ const adminLogin = async(req,res,next) => {
 const authCheck = (req,res,next) => {
 try{
 const token = req.cookies?.token;
-  console.log(process.env.TOKEN_SECRET);
   if(!token) return res.status(400).json({auth:false,
 message:"Token not found"
   });
