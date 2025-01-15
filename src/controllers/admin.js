@@ -30,7 +30,7 @@ const adminLogin = async(req,res,next) => {
 		const passcheck = await bcrypt.compare(password,user.password);
 		if(!passcheck) return res.status(400).json({message:"Incorrect password"});
 		else{
-			const option = {httpOnly:true,secure:true,sameSite:"strict"}
+			const option = {httpOnly:true,secure:true,sameSite:"none"}
 		const token = user.generateToken();
 		return res.status(200)
 				.cookie('token',token,option)
